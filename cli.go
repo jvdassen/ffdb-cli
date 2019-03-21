@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/abiosoft/ishell"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type macroNutrientProfile struct {
@@ -111,10 +113,25 @@ func parseNutritionInfo(doc *goquery.Document) macroNutrientProfile {
 }
 
 func main() {
-	res := searchForProducts("Kiwi")
-	fmt.Printf("%+v\n", res)
-	nutri1 := getNutritionInfoForProduct("naturprodukt_apfel_frisch")
-	fmt.Printf("Getting nutrition info for apple: %+v\n", nutri1)
-	nutri2 := getNutritionInfoForProduct("imbiss_doener_kebap")
-	fmt.Printf("Getting nutrition info for doner: %+v", nutri2)
+	shell := ishell.New()
+
+	shell.Println("Welcome to fddb CLI")
+	shell.AddCmd(&ishell.Cmd{
+		Name: "search",
+		Help: "search for food items in the nutrition database",
+		Func: func(c *ishell.Context) {
+			c.Println("Hello, you are searching for ", strings.Join(c.Args, " "))
+			res := searchForProducts(strings.Join(c.Args, " "))
+			fmt.Printf("%+v\n", res)
+		},
+	})
+
+	shell.Run()
+
+	// res := searchForProducts("Kiwi")
+	// fmt.Printf("%+v\n", res)
+	// nutri1 := getNutritionInfoForProduct("naturprodukt_apfel_frisch")
+	// fmt.Printf("Getting nutrition info for apple: %+v\n", nutri1)
+	// nutri2 := getNutritionInfoForProduct("imbiss_doener_kebap")
+	// fmt.Printf("Getting nutrition info for doner: %+v", nutri2)
 }
